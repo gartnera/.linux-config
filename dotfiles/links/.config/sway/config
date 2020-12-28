@@ -261,8 +261,5 @@ bindsym XF86AudioPrev exec playerctl previous
 exec kanshi
 exec mako
 
-# xwayland settings
-exec xsettingsd
-xwayland force scale 2
-
 include /etc/sway/config.d/*
+include config.local
