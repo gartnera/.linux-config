@@ -10,6 +10,11 @@ profile new-desk {
 	output "Goldstar Company Ltd LG ULTRAGEAR 010NTBKJQ757" enable mode 2560x1440@60Hz position 1707,350 scale 1.5
 }
 
+profile new-desk-desktop {
+	output "Goldstar Company Ltd LG ULTRAGEAR 010NTEPJQ724" enable mode 2560x1440@120Hz position 747,0 transform 90 scale 1.5
+	output "Goldstar Company Ltd LG ULTRAGEAR 010NTBKJQ757" enable mode 2560x1440@120Hz position 1707,350 scale 1.5
+}
+
 profile mobile {
 	output eDP-1 enable scale 1.5
 }
