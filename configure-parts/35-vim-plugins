@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# note: vimrc already linked from dotfiles
+
+source "${LINUXCONFIG_BASEPATH}/utils/git_clone_or_pull"
+
+vim_dir="${HOME}/.vim"
+
+
+# sleuth.vim
+sleuth_base="${vim_dir}/pack/tpope/start"
+mkdir -p $sleuth_base
+git_clone_or_pull_shallow https://github.com/tpope/vim-sleuth.git "${sleuth_base}/sleuth"
+
+# airline
+airline_base="${vim_dir}/pack/dist/start"
+mkdir -p $airline_base git_clone_or_pull_shallow https://github.com/vim-airline/vim-airline.git "${airline_base}/vim-airline"
+
+# editorconfig
+editorconfig_base="${vim_dir}/pack/local/start"
+mkdir -p $editorconfig_base
+git_clone_or_pull_shallow https://github.com/editorconfig/editorconfig-vim.git "${editorconfig_base}/editorconfig-vim"
+
+# gitgutter
+gitgutter_base="${vim_dir}/pack/airblade/start"
+mkdir -p $gitgutter_base
+git_clone_or_pull_shallow https://github.com/airblade/vim-gitgutter.git "${gitgutter_base}/vim-gitgutter"
