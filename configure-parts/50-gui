@@ -7,5 +7,5 @@ fi
 
 if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
 	source "${LINUXCONFIG_BASEPATH}/utils/pacman"
-	pacman_sinstall sway gdm alacritty wofi waybar
+	pacman_sinstall sway gdm alacritty wofi waybar kanshi mako
 fi
