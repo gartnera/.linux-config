@@ -8,6 +8,6 @@ if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
 	pacman_sinstall git base-devel
 	git_clone_or_pull_shallow https://aur.archlinux.org/yay.git /tmp/yay-aur
 	cd /tmp/yay-aur
-	makepkg -si --noconfirm
+	makepkg -si --noconfirm --needed
 	cd -
 fi
