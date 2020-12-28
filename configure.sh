@@ -7,7 +7,7 @@ export LINUXCONFIG_BASEPATH="$(pwd)"
 
 source "${LINUXCONFIG_BASEPATH}/utils/which_silent"
 
-export LINUXCONFIG_USER=$USER
+export LINUXCONFIG_USERNAME=$USER
 
 # detect gui
 if [[ -n "$DISPLAY" ||  -n "$WAYLAND_DISPLAY" ]]; then
@@ -25,6 +25,11 @@ elif which_silent yum; then
 fi
 
 # configure overrides here
-unset LINUXCONFIG_GUI
+#unset LINUXCONFIG_GUI
+
+if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
+	source "${LINUXCONFIG_BASEPATH}/utils/pacman"
+	pacman_sinstall run-parts gettext vim
+fi
 
 run-parts configure-parts
