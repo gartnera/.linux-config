@@ -163,8 +163,9 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
 
-    # Move focus to the parent container
-    bindsym $mod+a focus parent
+    # Parent/child focus
+    bindsym $mod+p focus parent
+    bindsym $mod+c focus child
 #
 # Scratchpad:
 #
