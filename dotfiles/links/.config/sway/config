@@ -18,7 +18,7 @@ set $term alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu wofi --show run --normal-window | xargs swaymsg exec --
+set $menu wofi --dmenu --show run | xargs swaymsg exec --
 
 set $lock swaylock -c 000000 --indicator-idle-visible -f
 set $sleep systemctl suspend
