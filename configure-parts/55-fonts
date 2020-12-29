@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ -z "$LINUXCONFIG_GUI" ]]; then
+	echo "Skipping font config because LINUXCONFIG_GUI not set"
+	exit
+fi
+
+if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
+	yay -S --noconfirm --needed tex-gyre-fonts otf-libertinus noto-fonts-emoji otf-font-awesome ttf-dejavu ttf-liberation noto-fonts
+	sudo ln -sf /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
+	sudo ln -sf /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
+	sudo ln -sf /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
+fi

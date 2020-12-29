@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pacman_sinstall() {
+	sudo pacman -S --noconfirm --needed $1
+}

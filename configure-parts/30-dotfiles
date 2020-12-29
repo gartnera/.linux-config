@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "Copying dotfiles"
+cd "${LINUXCONFIG_BASEPATH}/dotfiles/copies/"
+cp -r -n . "$HOME"
+cd -
+
+echo "Linking dotfiles"
+cd "${LINUXCONFIG_BASEPATH}/dotfiles/links/"
+
+links_dir=$(pwd)
+find . -type d -printf "%P\n" | awk 'NF' | xargs -n1 -I{} mkdir -p "${HOME}/{}"
+find . -type f -printf "%P\n" | xargs -n1 -I{} ln -sf "${links_dir}/{}" "${HOME}/{}"
+cd -
+

@@ -1,0 +1,11 @@
+[user]
+	email = git@agartner.com
+	name = Alex Gartner
+
+[push]
+	default = current
+[pull]
+	ff = only
+
+[includeIf "gitdir:~/workspace/github.com/braincorp/"]
+	path = ~/.gitconfig.work

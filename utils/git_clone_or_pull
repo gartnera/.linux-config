@@ -1,0 +1,18 @@
+#!/bin/bash
+
+git_clone_or_pull() {
+	repo="$1"
+	target="$2"
+	args="$3"
+	if [[ -d "$target" ]]; then
+		cd "$target"
+		git pull $args
+		cd -
+	else
+		git clone $args $repo $target
+	fi
+}
+
+git_clone_or_pull_shallow() {
+	git_clone_or_pull "$1" "$2" --depth=1
+}

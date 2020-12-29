@@ -1,0 +1,15 @@
+profile desk {
+	output eDP-1 disable
+	output "Dell Inc. DELL P2418D 29J0P92D00TT" enable position 0,0 scale 1.25
+	output "Dell Inc. Dell S2417DG YNY1D71K0PFU" enable mode 2560x1440@60Hz position 2048,0 scale 1.25
+}
+
+profile new-desk {
+	output eDP-1 disable
+	output "Goldstar Company Ltd LG ULTRAGEAR 010NTEPJQ724" enable mode 2560x1440@60Hz position 747,0 transform 90 scale 1.5
+	output "Goldstar Company Ltd LG ULTRAGEAR 010NTBKJQ757" enable mode 2560x1440@60Hz position 1707,350 scale 1.5
+}
+
+profile mobile {
+	output eDP-1 enable scale 1.5
+}

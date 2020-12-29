@@ -1,0 +1,10 @@
+#!/bin/bash
+
+PORT=6008
+if [[ -n $1 ]]; then
+				PORT=$1
+fi
+
+nohup /usr/bin/code-server --bind-addr=localhost:$PORT --auth=none $PWD >/dev/null 2>&1 &
+sleep .5
+chrome-app http://localhost:$PORT

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+which_silent() {
+	which $1 3>&2 >/dev/null
+}

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "Copying system-configs"
+cd "${LINUXCONFIG_BASEPATH}/system-configs/"
+
+staging_dir=~/.cache/systemconfigs
+rm -rf $staging_dir
+mkdir -p $staging_dir
+
+find . -type d -printf "%P\n" | awk 'NF' | envsubst | xargs -n1 -I{} mkdir -p "${staging_dir}/{}"
+find . -type f -printf "%P\n" | xargs -n1 -I{} bash -c "cat '{}' | envsubst > ${staging_dir}/$(echo '{}' | envsubst )"
+
+cd -
+
+cd $staging_dir
+find . -type f -printf "%P\n" | sudo xargs -n1 -I{} install -m 644 ./{} /{}
+cd -

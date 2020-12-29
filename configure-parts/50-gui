@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [[ -z "$LINUXCONFIG_GUI" ]]; then
+	echo "Skipping gui config because LINUXCONFIG_GUI not set"
+	exit
+fi
+
+if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
+	source "${LINUXCONFIG_BASEPATH}/utils/pacman"
+	pacman_sinstall sway gdm alacritty wofi waybar
+fi

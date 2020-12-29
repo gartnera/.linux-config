@@ -1,0 +1,7 @@
+#!/bin/bash
+
+source "${LINUXCONFIG_BASEPATH}/utils/pacman"
+
+if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
+	pacman_sinstall gettext vim
+fi

@@ -1,0 +1,9 @@
+{
+	output eDP-1 disable
+	output DP-3 position 0,0
+	output DP-5 position 2560,0
+}
+
+{
+	output eDP-1 enable
+}

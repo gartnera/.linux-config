@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "Updating system"
+
+if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
+	sudo pacman -Syu --noconfirm
+fi

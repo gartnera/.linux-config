@@ -1,0 +1,2 @@
+#!/bin/bash
+chrome --app="https://app.slack.com/client/"

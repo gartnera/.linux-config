@@ -1,0 +1,13 @@
+#!/bin/bash
+
+source "${LINUXCONFIG_BASEPATH}/utils/git_clone_or_pull"
+source "${LINUXCONFIG_BASEPATH}/utils/which_silent"
+source "${LINUXCONFIG_BASEPATH}/utils/pacman"
+
+if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
+	pacman_sinstall git base-devel
+	git_clone_or_pull_shallow https://aur.archlinux.org/yay.git /tmp/yay-aur
+	cd /tmp/yay-aur
+	makepkg -si --noconfirm
+	cd -
+fi

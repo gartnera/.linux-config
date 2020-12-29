@@ -1,0 +1,7 @@
+#!/bin/bash
+url="http://captive.apple.com"
+if [[ -n $1 ]]; then
+	url=$1
+fi
+
+chrome --app="$url"
