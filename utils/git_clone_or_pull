@@ -6,7 +6,7 @@ git_clone_or_pull() {
 	args="$3"
 	if [[ -d "$target" ]]; then
 		cd "$target"
-		git pull $args
+		git pull || git pull --unshallow
 		cd -
 	else
 		git clone $args $repo $target

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+source "${LINUXCONFIG_BASEPATH}/utils/git_clone_or_pull"
+
+if [[ -n "$LINUXCONFIG_PACMAN" ]]; then
+	source "${LINUXCONFIG_BASEPATH}/utils/pacman"
+	pacman_sinstall zsh
+fi
+
+if [[ -n "$LINUXCONFIG_APT" ]]; then
+	apt install -y zsh
+fi
+
+
+if [[ -n "$LINUXCONFIG_YUM" ]]; then
+	yum install -y zsh
+fi
+
+sudo chsh -s $(which zsh) alex
+
+git_clone_or_pull_shallow https://github.com/ohmyzsh/ohmyzsh "${HOME}/.oh-my-zsh"
