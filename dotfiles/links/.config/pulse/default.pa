@@ -1,0 +1,4 @@
+load-module module-udev-detect ignore_dB=1
+load-module module-device-manager
+
+.include /etc/pulse/default.pa
