@@ -14,7 +14,8 @@ git_clone_or_pull_shallow https://github.com/tpope/vim-sleuth.git "${sleuth_base
 
 # airline
 airline_base="${vim_dir}/pack/dist/start"
-mkdir -p $airline_base git_clone_or_pull_shallow https://github.com/vim-airline/vim-airline.git "${airline_base}/vim-airline"
+mkdir -p $airline_base 
+git_clone_or_pull_shallow https://github.com/vim-airline/vim-airline.git "${airline_base}/vim-airline"
 
 # editorconfig
 editorconfig_base="${vim_dir}/pack/local/start"
