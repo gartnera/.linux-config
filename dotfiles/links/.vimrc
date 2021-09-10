@@ -30,3 +30,6 @@ let g:PaperColor_Theme_Options = {
 
 highlight Normal ctermbg=NONE
 highlight nonText ctermbg=NONE
+
+call plug#begin('~/.vim/plugged')
+call plug#end()

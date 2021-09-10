@@ -4,7 +4,7 @@ bin="chromium"
 args=""
 
 if [[ -n "$WAYLAND_DISPLAY" ]]; then
-	args="$args -enable-features=UseOzonePlatform -ozone-platform=wayland"
+	args="$args -enable-features=UseOzonePlatform,WebUIDarkMode -ozone-platform=wayland --ignore-gpu-blocklist --force-dark-mode --profile-directory=Default"
 fi
 
 if dmesg | grep nouveau >/dev/null; then
@@ -15,4 +15,4 @@ if dmesg | grep nouveau >/dev/null; then
 	fi
 fi
 
-$bin $args $@
+exec $bin $args $@

@@ -4,4 +4,4 @@ if [[ -n $1 ]]; then
 	url=$1
 fi
 
-chrome --app="$url"
+exec chrome --app="$url"

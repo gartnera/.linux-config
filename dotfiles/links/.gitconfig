@@ -9,3 +9,15 @@
 
 [includeIf "gitdir:~/workspace/github.com/braincorp/"]
 	path = ~/.gitconfig.work
+[includeIf "gitdir:~/workspace/github.com/alexgartner-bc/"]
+	path = ~/.gitconfig.work
+
+[core]
+	excludesfile = /home/alex/.gitignore
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f

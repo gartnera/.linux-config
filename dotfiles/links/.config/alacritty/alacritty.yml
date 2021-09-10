@@ -1,4 +1,8 @@
 # Configuration for Alacritty, the GPU enhanced terminal emulator.
+font:
+  normal:
+    family: JetBrainsMono Nerd Font
+    style: Regular
 
 # Import additional configuration files
 #
@@ -410,7 +414,7 @@ mouse:
   # If this is `true`, the cursor is temporarily hidden when typing.
   #hide_when_typing: false
 
-  url:
+  hints:
     # URL launcher
     #
     # This program is executed when clicking on a text which is recognized as a

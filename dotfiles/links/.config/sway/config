@@ -20,7 +20,7 @@ set $term alacritty
 # on the original workspace that the command was run on.
 set $menu wofi --dmenu --show run | xargs swaymsg exec --
 
-set $lock swaylock -c 000000 --indicator-idle-visible -f
+set $lock swaylock -c 000000 --indicator-idle-visible -f -D
 set $sleep systemctl suspend
 
 bindsym $mod+Shift+s exec "$lock; $sleep"
@@ -29,7 +29,7 @@ bindsym $mod+Ctrl+l exec "$lock"
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+# output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # Example configuration:
 #
@@ -201,36 +201,13 @@ mode "resize" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+
 bindsym $mod+r mode "resize"
-
-# desktop settings
-#output HDMI-A-1 scale 1.5
-#output DP-1 scale 1.5 res 2560x1440@144Hz
-#output "Dell Inc. DELL P2418D 29J0P92D00TT" scale 1.5
-#output "Dell Inc. Dell S2417DG #ASNB3mfWMnbd" scale 1.5 res 2560x1440@144Hz
-#
-# Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
-bar {
-    #position top
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    #status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
-    swaybar_command waybar
-
-    colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
-    }
-}
 
 font "Noto Sans Mono 10"
 
 input "type:keyboard" {
-    xkb_options "caps:escape,altwin:swap_alt_win"
+    xkb_options "caps:escape,altwin:swap_lalt_lwin"
 }
 
 input "1267:32:Elan_Touchpad" {
@@ -243,6 +220,7 @@ bindsym --whole-window $mod+button9 focus left
 bindsym --whole-window $mod+button8 focus right
 
 for_window [title=".* - Chromium"] border none
+for_window [title="Zeal*"] floating enable
 
 mouse_warping container
 
@@ -262,8 +240,7 @@ bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
-exec kanshi
-exec mako
-
 include /etc/sway/config.d/*
 include config.local
+
+exec_always "systemctl --user import-environment; systemctl --user restart sway-session.target"
