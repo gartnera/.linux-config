@@ -220,6 +220,7 @@ bindsym --whole-window $mod+button9 focus left
 bindsym --whole-window $mod+button8 focus right
 
 for_window [title=".* - Chromium"] border none
+for_window [title=".*Firefox"] border none
 for_window [title="Zeal*"] floating enable
 
 mouse_warping container
