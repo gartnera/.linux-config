@@ -1,1 +1,2 @@
 PATH DEFAULT=${HOME}/bin:${HOME}/.linux-config/scripts-bin:${PATH}
+QT_QPA_PLATFORMTHEME DEFAULT=qt5ct

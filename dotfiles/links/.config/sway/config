@@ -4,6 +4,8 @@
 #
 # Read `man 5 sway` for a complete reference.
 
+for_window [app_id="^chrome-.*-.*$"] shortcuts_inhibitor disable
+
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
@@ -18,7 +20,8 @@ set $term alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu wofi --dmenu --show run | xargs swaymsg exec --
+set $menu rofi -show run
+set $dash wldash
 
 set $lock swaylock -c 000000 --indicator-idle-visible -f -D
 set $sleep systemctl suspend
@@ -76,6 +79,7 @@ bindsym $mod+Ctrl+l exec "$lock"
 
     # Start your launcher
     bindsym $mod+d exec $menu
+    bindsym $mod+Shift+d exec $dash
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.

@@ -4,15 +4,7 @@ bin="chromium"
 args=""
 
 if [[ -n "$WAYLAND_DISPLAY" ]]; then
-	args="$args -enable-features=UseOzonePlatform,WebUIDarkMode -ozone-platform=wayland --ignore-gpu-blocklist --force-dark-mode --profile-directory=Default"
+	args="$args -enable-features=UseOzonePlatform,WebUIDarkMode -ozone-platform=wayland --force-dark-mode --profile-directory=Default --ignore-gpu-blocklist --enable-features=WebUIDarkMode,VaapiVideoEncoder"
 fi
 
-if dmesg | grep nouveau >/dev/null; then
-	args="$args --ignore-gpu-blocklist"
-
-	if [[ -n "$WAYLAND_DISPLAY" ]]; then
-		bin="google-chrome-unstable"
-	fi
-fi
-
-exec $bin $args $@
+exec nice -5 $bin $args $@

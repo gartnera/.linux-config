@@ -9,6 +9,8 @@
 
 [includeIf "gitdir:~/workspace/github.com/braincorp/"]
 	path = ~/.gitconfig.work
+[includeIf "gitdir:~/workspace2/github.com/braincorp/"]
+	path = ~/.gitconfig.work
 [includeIf "gitdir:~/workspace/github.com/alexgartner-bc/"]
 	path = ~/.gitconfig.work
 
