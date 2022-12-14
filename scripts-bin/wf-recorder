@@ -1,0 +1,18 @@
+#!/bin/bash
+
+SAVEDIR=${SWAY_INTERACTIVE_SCREENSHOT_SAVEDIR:=~/screenshots}
+mkdir -p -- "$SAVEDIR"
+FILENAME="$SAVEDIR/$(date +'%Y-%m-%d-%H%M%S.mp4')"
+EXPANDED_FILENAME="${FILENAME/#\~/$HOME}"
+
+area=""
+if [[ $1 == "monitor" ]]; then
+	area=$(slurp -or)
+else
+	area=$(slurp)
+fi
+
+/usr/bin/wf-recorder -g "${area}" -t $@ --file=$EXPANDED_FILENAME
+
+wl-copy < "$EXPANDED_FILENAME"
+echo Copied $EXPANDED_FILENAME to clipboard
