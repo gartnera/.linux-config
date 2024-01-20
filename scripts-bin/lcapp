@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eo pipefail
+
+url=$(zenity --entry --title "Open Chrome in App Mode" --text="URL")
+
+capp "${url}"
