@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+
 # Prompts user to select an audio device (output sink) to be used
 # as default output and set it for all active applications (input sinks).
 # (requires `pactl` and `dmenu`)
@@ -85,7 +85,7 @@ elif [ "$toggle" == "true" ]; then
 else
     # fall back to interactive select and prompt user to select an audio device
     selected_sink_output=$(printf "$SINK_OUTPUTS" \
-                           | wofi -d -i -p "Select sink:")
+                           | rofi -dmenu -i -p "Select sink")
     sink_output_index=$(pactl list sinks \
                         | grep -Fe 'Sink #' -e "Description: $selected_sink_output" \
                         | grep -FB1 'Description:' \

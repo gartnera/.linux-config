@@ -1,18 +1,31 @@
 #!/bin/bash
 
+set -eo pipefail
+
 SAVEDIR=${SWAY_INTERACTIVE_SCREENSHOT_SAVEDIR:=~/screenshots}
 mkdir -p -- "$SAVEDIR"
 FILENAME="$SAVEDIR/$(date +'%Y-%m-%d-%H%M%S.mp4')"
 EXPANDED_FILENAME="${FILENAME/#\~/$HOME}"
 
-area=""
-if [[ $1 == "monitor" ]]; then
+area=$(echo -e "Monitor\nRegion\nApplication" | rofi -dmenu)
+
+if [[ $area == "Monitor" ]]; then
 	area=$(slurp -or)
-else
+elif [[ $area == "Region" ]]; then
 	area=$(slurp)
+elif [[ $area == "Application" ]]; then
+	area=$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp)
+else
+	echo "Invalid area"
+	exit 1
 fi
 
-/usr/bin/wf-recorder -g "${area}" -t $@ --file=$EXPANDED_FILENAME
+vaapi_args=""
+if [[ -e /dev/dri/renderD128 ]]; then
+    vaapi_args="-c h264_vaapi -d /dev/dri/renderD128"
+fi
+
+/usr/bin/wf-recorder -g "${area}" $@ $vaapi_args --file=$EXPANDED_FILENAME
 
 wl-copy < "$EXPANDED_FILENAME"
 echo Copied $EXPANDED_FILENAME to clipboard
