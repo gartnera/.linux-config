@@ -17,7 +17,7 @@
 	],
 	"modules-right": [
 		"custom/left-arrow-dark",
-		"pulseaudio",
+		"wireplumber",
 		"memory",
 		"cpu",
 		"battery",
@@ -60,7 +60,7 @@
 		"tooltip": false
 	},
 
-	"pulseaudio": {
+	"wireplumber": {
 		"format": "{icon} {volume:2}%",
 		"format-bluetooth": "{icon}  {volume}%",
 		"format-muted": "MUTE",

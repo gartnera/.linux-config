@@ -22,7 +22,7 @@ window#waybar {
 #clock.1,
 #clock.2,
 #clock.3,
-#pulseaudio,
+#wireplumber,
 #memory,
 #cpu,
 #battery,
@@ -48,7 +48,7 @@ window#waybar {
 	padding: 0 3px;
 }
 
-#pulseaudio {
+#wireplumber {
 	color: #268bd2;
 }
 #memory {
@@ -65,7 +65,7 @@ window#waybar {
 }
 
 #clock,
-#pulseaudio,
+#wireplumber,
 #memory,
 #cpu,
 #battery,
