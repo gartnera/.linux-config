@@ -16,18 +16,18 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term alacritty
+set $term systemd-run -p MemoryMax=75% -p CPUWeight=50 -p Nice=5 --user alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu rofi -show run
+set $menu rofi -show run -run-command 'swaymsg exec -- {cmd}'
 set $dash wldash
 
-set $lock swaylock -c 000000 --indicator-idle-visible -f -D
+set $lock systemd-cat -t swaylock swaylock -c 000000 --indicator-idle-visible -f
 set $sleep systemctl suspend
 
-bindsym $mod+Shift+s exec "$lock; $sleep"
-bindsym $mod+Ctrl+l exec "$lock"
+bindsym --release $mod+Shift+s exec "$lock;$sleep"
+bindsym --release $mod+Ctrl+l exec "$lock"
 
 ### Output configuration
 #
@@ -212,6 +212,7 @@ font "Noto Sans Mono 10"
 
 input "type:keyboard" {
     xkb_options "caps:escape,altwin:swap_lalt_lwin"
+    xkb_numlock enabled
 }
 
 input "1267:32:Elan_Touchpad" {
@@ -236,6 +237,9 @@ bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym Shift+XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +1%
 bindsym Shift+XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -1%
+# also add macos compatible shortcuts
+bindsym Alt+Shift+XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +1%
+bindsym Alt+Shift+XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -1%
 
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
@@ -247,5 +251,9 @@ bindsym XF86AudioPrev exec playerctl previous
 
 include /etc/sway/config.d/*
 include config.local
+
+workspace_layout tabbed
+workspace 1 output 'LG Electronics LG ULTRAGEAR 010NTEPJQ724'
+workspace 2 output 'LG Electronics LG ULTRAGEAR 010NTEPJQ724'
 
 exec_always "systemctl --user import-environment; systemctl --user restart sway-session.target"
