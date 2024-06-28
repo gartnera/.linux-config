@@ -1,13 +1,13 @@
 #!/bin/bash
 
-set -eo pipefail
+set -eo pipefail 
 
 SAVEDIR=${SWAY_INTERACTIVE_SCREENSHOT_SAVEDIR:=~/screenshots}
 mkdir -p -- "$SAVEDIR"
-FILENAME="$SAVEDIR/$(date +'%Y-%m-%d-%H%M%S.mp4')"
+FILENAME="$SAVEDIR/$(date +'%Y-%m-%d-%H%M%S')"
 EXPANDED_FILENAME="${FILENAME/#\~/$HOME}"
 
-area=$(echo -e "Monitor\nRegion\nApplication" | rofi -dmenu)
+area=$(echo -e "Monitor\nRegion\nApplication\nDualMonitor" | rofi -dmenu -window-title 'Capture Area')
 
 if [[ $area == "Monitor" ]]; then
 	area=$(slurp -or)
@@ -15,6 +15,8 @@ elif [[ $area == "Region" ]]; then
 	area=$(slurp)
 elif [[ $area == "Application" ]]; then
 	area=$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp)
+elif [[ $area == "DualMonitor" ]]; then
+	echo "using special dual monitor logic"
 else
 	echo "Invalid area"
 	exit 1
@@ -25,7 +27,43 @@ if [[ -e /dev/dri/renderD128 ]]; then
     vaapi_args="-c h264_vaapi -d /dev/dri/renderD128"
 fi
 
-/usr/bin/wf-recorder -g "${area}" $@ $vaapi_args --file=$EXPANDED_FILENAME
+audio_args=""
+audio_prompt_res=$(echo -e "no\nmicrophone" | rofi -dmenu -window-title 'Audio?')
+if [[ $audio_prompt_res == "microphone" ]]; then
+	audio_args="--audio"
+elif [[ $audio_prompt_res == "microphone+desktop" ]]; then
+	echo "microphone+desktop not supported"
+	exit 1
+fi
 
-wl-copy < "$EXPANDED_FILENAME"
-echo Copied $EXPANDED_FILENAME to clipboard
+if [[ $area == "DualMonitor" ]]; then
+	left_area=$(swaymsg -t get_outputs --raw | jq -r -c '[.[] | select(.active == true) | .rect][0] | "\(.x),\(.y) \(.width)x\(.height)"')
+	right_area=$(swaymsg -t get_outputs --raw | jq -r -c '[.[] | select(.active == true) | .rect][1] | "\(.x),\(.y) \(.width)x\(.height)"')
+	left_filename=${EXPANDED_FILENAME}.left.mp4
+	right_filename=${EXPANDED_FILENAME}.right.mp4
+	/usr/bin/wf-recorder -g "${left_area}" $@ $audio_args $vaapi_args --file=$left_filename &
+	/usr/bin/wf-recorder -g "${right_area}" $@ $audio_args $vaapi_args --file=$right_filename &
+
+	trap 'echo "Press enter to stop"' SIGINT
+	sleep .1
+	read -p "Press enter to stop!!!!" || true
+	echo "Exiting"
+	kill $(jobs -p) || true # may have already been killed by ctrl+c
+	wait
+	post_processing_mode=$(echo -e "none\nhstack\nvstack" | rofi -dmenu -window-title 'Post Processing?')
+	post_processing_audio_args=""
+	# if audio enabled, take audio from the first video
+	if [[ $audio_args ]]; then
+		post_processing_audio_args="-map [v] -map 1:a"
+	fi
+	if [[ $post_processing_mode == "hstack" ]]; then
+		ffmpeg -i $left_filename -i $right_filename -filter_complex "[0:v][1:v]hstack=inputs=2[v]" $post_processing_audio_args ${EXPANDED_FILENAME}.combined.mp4
+	elif [[ $post_processing_mode == "vstack" ]]; then
+		ffmpeg -i $left_filename -i $right_filename -filter_complex "[0:v][1:v]vstack=inputs=2[v]" $post_processing_audio_args ${EXPANDED_FILENAME}.combined.mp4
+	fi
+else
+	/usr/bin/wf-recorder -g "${area}" $@ $audio_args $vaapi_args --file=${EXPANDED_FILENAME}.mp4
+
+	# wl-copy < "${EXPANDED_FILENAME}.mp4"
+	# echo Copied ${EXPANDED_FILENAME}.mp4 to clipboard
+fi
