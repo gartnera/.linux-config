@@ -1,3 +1,4 @@
 #!/bin/bash
 
+systemctl restart --user spotifyd
 chrome-app https://open.spotify.com
