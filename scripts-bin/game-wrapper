@@ -1,0 +1,48 @@
+#!/bin/bash
+
+if [[ -n $GAMESCOPE ]]; then
+	# we are already running in gamescope, just run game
+	exec $@
+fi
+
+gamescope_extra_args=""
+if echo "$@" | grep -q "Steam" ; then
+	echo "Seems to be running under steam, enabling steam overlay"
+	gamescope_extra_args="${gamescope_extra_args} -e"
+else
+	# disable steam overlay
+	# https://github.com/ValveSoftware/gamescope/issues/163
+	export LD_PRELOAD=
+fi
+
+export MANGOHUD_CONFIG=no_display
+export RADV_PERFTEST=rt
+
+default_output=$(swaymsg -t get_outputs -r | jq -r '.[0].name')
+
+desktop_output=DP-1
+
+#swaymsg "output $default_output adaptive_sync on"
+clean_up () {
+	swaymsg "output $default_output adaptive_sync off"
+	exit
+} 
+trap clean_up EXIT
+
+
+mode=$(swaymsg -t get_outputs -r | jq -r '.[0].current_mode')
+width=$(echo $mode | jq -r .width)
+height=$(echo $mode | jq -r .height)
+raw_refresh=$(echo $mode | jq -r .refresh)
+refresh=$(python -c "from math import ceil; print(ceil($raw_refresh/1000));")
+
+export DXVK_FRAME_RATE=${refresh}
+
+# https://github.com/ValveSoftware/gamescope/issues/1051
+export SDL_VIDEODRIVER=x11
+
+# ensure ollama releases GPU memory
+systemctl restart --user ollama 
+
+echo "Launching gamescope, view logs with: journalctl --user -t gamescope"
+systemd-cat -t gamescope gamescope ${gamescope_extra_args} -H $height -W $width -h $height -w $width -r $refresh -o $refresh -f --adaptive-sync --force-grab-cursor --mangoapp -- "$@"

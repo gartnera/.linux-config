@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+import subprocess
+import json
+import sys
+
+def set_chrome_input_mute(muted: str):
+    source_outputs_raw = subprocess.check_output(['pactl', '-f', 'json', 'list', 'source-outputs'])
+    source_outputs = json.loads(source_outputs_raw)
+
+    found_input = False
+    for source_output in source_outputs:
+        if source_output["properties"]["application.name"] != "Chromium input":
+            continue
+        print(f"Setting mute for source output {source_output['index']} to {muted}")
+        subprocess.call(['pactl', 'set-source-output-mute', str(source_output['index']), muted])
+        found_input = True
+
+    if not found_input:
+        print(f"No source output found for Chromium input: ({muted})")
+
+set_chrome_input_mute(sys.argv[1])

@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+from i3ipc import Connection, Event
+
+i3 = Connection()
+
+is_hotkeys_active = False
+
+target_app_ids = [
+    "gamescope",
+    "com.moonlight_stream.Moonlight",
+    "wev",
+]
+
+def on_window_close(i3: Connection, e: Event):
+    global is_hotkeys_active
+    app_id = e.container.app_id
+    if app_id in target_app_ids and is_hotkeys_active:
+        print(f"Disabling gamescope mode because close of {app_id}")
+        i3.command("mode default")
+        is_hotkeys_active = False
+
+def on_window_focus(i3: Connection, e: Event):
+    global is_hotkeys_active
+    app_id = e.container.app_id
+    if app_id not in target_app_ids and is_hotkeys_active:
+        print(f"Disabling gamescope mode because of {app_id}")
+        i3.command("mode default")
+        is_hotkeys_active = False
+    if app_id in target_app_ids:
+        print(f"Enabling gamescope mode because of {app_id}")
+        is_hotkeys_active = True
+        i3.command("mode gamescope")
+
+i3.on(Event.WINDOW_CLOSE, on_window_close)
+i3.on(Event.WINDOW_FOCUS, on_window_focus)
+i3.main()

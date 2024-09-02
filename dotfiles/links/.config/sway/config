@@ -1,9 +1,3 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
-# Read `man 5 sway` for a complete reference.
-
 for_window [app_id="^chrome-.*-.*$"] shortcuts_inhibitor disable
 
 ### Variables
@@ -206,6 +200,52 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 
+# gamescope mode has limited keybindings so you don't accidentally do stuff while playing games
+# also add keybindings which mute the chromium input (for discord) when an in game button is pressed
+mode "gamescope" {
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
+
+    bindsym $mod+f fullscreen
+    bindsym $mod+Shift+q kill
+	bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+	bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+	bindsym Shift+XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +1%
+	bindsym Shift+XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -1%
+
+	# --mangoapp option on gamescope does not handle keybindings
+	# it can be configured via mangohudctl commands
+	bindsym Shift+F12 exec mangohudctl toggle no_display
+
+	# WARN: --passthrough is a custom option I added 
+	# which handles the keypress but also passes through the keys to the application
+	# https://github.com/gartnera/sway/commit/e57220af372ad3e7cb0cc93be60d3ac18d355eca
+    bindsym --passthrough --no-repeat t exec --no-startup-id chrome-input-mute 1
+    bindsym --passthrough --release t exec --no-startup-id chrome-input-mute 0 
+
+    bindsym --passthrough --whole-window --no-repeat button8 exec --no-startup-id chrome-input-mute 1
+    bindsym --passthrough --whole-window --release button8 exec --no-startup-id chrome-input-mute 0
+}
+
 bindsym $mod+r mode "resize"
 
 font "Noto Sans Mono 10"
@@ -255,5 +295,7 @@ include config.local
 workspace_layout tabbed
 workspace 1 output 'LG Electronics LG ULTRAGEAR 010NTEPJQ724'
 workspace 2 output 'LG Electronics LG ULTRAGEAR 010NTEPJQ724'
+workspace 3 output 'LG Electronics LG ULTRAGEAR 010NTBKJQ757'
+workspace 4 output 'LG Electronics LG ULTRAGEAR 010NTBKJQ757'
 
 exec_always "systemctl --user import-environment; systemctl --user restart sway-session.target"

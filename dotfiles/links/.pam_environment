@@ -1,2 +1,2 @@
-PATH DEFAULT=${HOME}/bin:${HOME}/.linux-config/scripts-bin:${PATH}
+PATH DEFAULT=${HOME}/bin:${HOME}/.linux-config/scripts-bin:${HOME}/go/bin:${HOME}/.local/bin:${PATH}
 QT_QPA_PLATFORMTHEME DEFAULT=qt5ct

@@ -16,8 +16,13 @@ profile mobile {
 
 profile new-desk-2 {
 	output eDP-1 disable
-        output "LG Electronics LG ULTRAGEAR 010NTBKJQ757" enable mode 2560x1440@75Hz position 2682,1900 scale 1.25
-        output "LG Electronics LG ULTRAGEAR 010NTEPJQ724" enable mode 2560x1440@75Hz position 634,1900 scale 1.25
+	output "LG Electronics LG ULTRAGEAR 010NTBKJQ757" enable mode 2560x1440@75Hz position 2682,1900 scale 1.25
+	output "LG Electronics LG ULTRAGEAR 010NTEPJQ724" enable mode 2560x1440@75Hz position 634,1900 scale 1.25
+}
+
+profile new-desk-3 {
+	output "LG Electronics LG ULTRAGEAR 010NTBKJQ757" enable mode 2560x1440@144Hz position 2682,1900 scale 1.25
+	output "LG Electronics LG ULTRAGEAR 010NTEPJQ724" enable mode 2560x1440@144Hz position 634,1900 scale 1.25
 }
 
 profile tv {
