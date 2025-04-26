@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
+import os
+
 from i3ipc import Connection, Event
 
 i3 = Connection()
 
 is_hotkeys_active = False
+is_gamescope = False
 
 target_app_ids = [
     "gamescope",
@@ -12,26 +15,44 @@ target_app_ids = [
     "wev",
 ]
 
+def disable_gamescope_mode():
+    global is_hotkeys_active, is_gamescope
+    if is_hotkeys_active:
+        i3.command("mode default")
+        is_hotkeys_active = False
+        if is_gamescope:
+            os.system("gamescopectl debug_set_fps_limit 30")
+            is_gamescope = False
+
 def on_window_close(i3: Connection, e: Event):
     global is_hotkeys_active
     app_id = e.container.app_id
     if app_id in target_app_ids and is_hotkeys_active:
         print(f"Disabling gamescope mode because close of {app_id}")
-        i3.command("mode default")
-        is_hotkeys_active = False
+        disable_gamescope_mode()
 
 def on_window_focus(i3: Connection, e: Event):
     global is_hotkeys_active
+    global is_gamescope
     app_id = e.container.app_id
     if app_id not in target_app_ids and is_hotkeys_active:
         print(f"Disabling gamescope mode because of {app_id}")
-        i3.command("mode default")
-        is_hotkeys_active = False
+        disable_gamescope_mode()
     if app_id in target_app_ids:
         print(f"Enabling gamescope mode because of {app_id}")
         is_hotkeys_active = True
         i3.command("mode gamescope")
+        if app_id == "gamescope":
+            is_gamescope = True
+            os.system("gamescopectl debug_set_fps_limit 144")
+
+def on_workspace_focus(i3: Connection, e: Event):
+    focused = i3.get_tree().find_focused()
+    if focused is None or focused.type != "con":
+        print("Disabling gamescope mode because workspace focus")
+        disable_gamescope_mode()
 
 i3.on(Event.WINDOW_CLOSE, on_window_close)
 i3.on(Event.WINDOW_FOCUS, on_window_focus)
+i3.on(Event.WORKSPACE_FOCUS, on_workspace_focus)
 i3.main()
