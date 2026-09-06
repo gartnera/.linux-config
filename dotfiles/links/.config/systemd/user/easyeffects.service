@@ -1,0 +1,27 @@
+# easyeffects audio-effects daemon.
+#
+# BindsTo (not just After) graphical-session.target on purpose. Without it, systemd left
+# this running while the compositor went away; GTK then aborted on the dead Wayland
+# connection (SIGABRT), Restart=on-failure burned through the default 5-starts-in-10s
+# limit, and the unit ended up permanently failed, needing a manual `reset-failed` to come
+# back. That is precisely what happened when the compositor died on 2026-09-06. Binding it
+# to the session means systemd stops it cleanly with the session instead of letting it die
+# badly, and the raised start limit means a transient failure self-heals.
+[Unit]
+Description=easyeffects daemon
+Documentation=https://github.com/wwmm/easyeffects
+BindsTo=graphical-session.target
+After=graphical-session.target
+StartLimitIntervalSec=60
+StartLimitBurst=10
+
+[Service]
+ExecStart=/usr/bin/easyeffects --gapplication-service
+Restart=on-failure
+RestartSec=2
+# uwsm's slice for session-scoped background daemons. The slice ships with uwsm in
+# /usr/lib/systemd/user and starts on demand, so this is harmless under sway too.
+Slice=background-graphical.slice
+
+[Install]
+WantedBy=graphical-session.target

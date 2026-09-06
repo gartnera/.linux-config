@@ -1,3 +1,5 @@
+# playerctld remembers which mpris service was most recently active and ensure that commands
+# are routed to that player
 # Bound to graphical-session.target rather than sway-session.target so this starts under
 # both compositors: sway-session.target has BindsTo=graphical-session.target (so it pulls
 # it in), and uwsm starts graphical-session.target natively for Hyprland.
@@ -7,7 +9,7 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/mako
+ExecStart=/usr/bin/playerctld
 Restart=always
 RestartSec=1
 

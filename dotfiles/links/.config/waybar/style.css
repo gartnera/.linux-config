@@ -35,7 +35,10 @@ window#waybar {
 	padding: 0 2px;
 	color: #fdf6e3;
 }
-#workspaces button.focused {
+/* .focused is sway/workspaces; .active is the hyprland/workspaces equivalent. Both are
+   listed so this stylesheet works under either compositor. */
+#workspaces button.focused,
+#workspaces button.active {
 	color: #268bd2;
 }
 #workspaces button:hover {

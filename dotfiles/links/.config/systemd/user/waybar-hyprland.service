@@ -1,0 +1,16 @@
+# Waybar under Hyprland. Counterpart to waybar.service; see the comment there.
+[Unit]
+Description=Waybar (Hyprland)
+After=graphical-session.target
+
+[Service]
+Type=exec
+ExecCondition=/usr/lib/systemd/systemd-xdg-autostart-condition "Hyprland" ""
+ExecStart=/usr/bin/waybar -c %h/.config/waybar/config.hyprland
+ExecReload=kill -SIGUSR2 $MAINPID
+Restart=always
+RestartSec=5
+Slice=app-graphical.slice
+
+[Install]
+WantedBy=graphical-session.target

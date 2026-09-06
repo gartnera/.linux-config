@@ -1,0 +1,30 @@
+// -*- mode: json -*-
+//
+// Hyprland variant of the waybar config. It includes the shared config and overrides only
+// what is compositor-specific, so the two cannot drift apart. Selected by the
+// waybar-session wrapper, since waybar.service is shared between both sessions.
+{
+	"include": ["/home/alex/.config/waybar/config"],
+
+	// sway/workspaces -> hyprland/workspaces. Everything else in modules-left is unchanged
+	// from the shared config; the list has to be restated because it is overridden whole.
+	"modules-left": [
+		"hyprland/workspaces",
+		"hyprland/submap",
+		"custom/right-arrow-dark"
+	],
+
+	"hyprland/workspaces": {
+		"disable-scroll": true,
+		"format": "{name}"
+	},
+
+	// The sway config had no mode indicator, but submaps are worth showing here: the
+	// gamescope submap is entered manually ($mod+Shift+g) until gamescope-mode-manager is
+	// ported, so without this there is no way to tell you are in it. Renders nothing when
+	// no submap is active.
+	"hyprland/submap": {
+		"format": "{}",
+		"tooltip": false
+	}
+}

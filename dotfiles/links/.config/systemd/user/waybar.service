@@ -1,11 +1,23 @@
+# Waybar under sway. The Hyprland variant is waybar-hyprland.service, which loads a
+# different config (hyprland/workspaces instead of sway/workspaces).
+#
+# Both are WantedBy=graphical-session.target and gated by ExecCondition, so exactly one
+# actually runs depending on $XDG_CURRENT_DESKTOP. This is uwsm's documented pattern
+# (see its example-units/waybar.service) and replaces the wrapper script that used to
+# pick a config here.
 [Unit]
-BindsTo=sway-session.target
+Description=Waybar (sway)
+After=graphical-session.target
 
 [Service]
-Type=simple
+Type=exec
+# Repurpose XDG Autostart filtering: runs only when XDG_CURRENT_DESKTOP matches
+ExecCondition=/usr/lib/systemd/systemd-xdg-autostart-condition "sway" ""
 ExecStart=/usr/bin/waybar
+ExecReload=kill -SIGUSR2 $MAINPID
 Restart=always
-RestartSec=1
+RestartSec=5
+Slice=app-graphical.slice
 
 [Install]
-WantedBy=sway-session.target
+WantedBy=graphical-session.target

@@ -1,13 +1,18 @@
+# Bound to graphical-session.target rather than sway-session.target so this starts under
+# both compositors: sway-session.target has BindsTo=graphical-session.target (so it pulls it
+# in), and uwsm starts graphical-session.target natively for Hyprland.
+# NOTE: this file is a local copy, not a symlink into ~/.linux-config like mako/playerctld.
 [Unit]
 Description=Dynamic output configuration for Wayland compositors
 Documentation=https://github.com/emersion/kanshi
-BindsTo=sway-session.target
+BindsTo=graphical-session.target
+After=graphical-session.target
 
 [Service]
 Type=simple
 ExecStart=/usr/bin/kanshi
 Restart=always
-RestartSec=1
+RestartSec=5
 
 [Install]
-WantedBy=sway-session.target
+WantedBy=graphical-session.target

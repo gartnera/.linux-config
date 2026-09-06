@@ -1,3 +1,7 @@
+# Deliberately still bound to sway-session.target, NOT graphical-session.target: this
+# service talks sway IPC via python-i3ipc and its Hyprland port (socket2 events,
+# app_id -> class, `mode X` -> `hyprctl dispatch submap X`) is still deferred. Binding it
+# to graphical-session.target would make it crash-loop under Hyprland, since Restart=always.
 [Unit]
 BindsTo=sway-session.target
 
