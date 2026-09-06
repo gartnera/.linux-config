@@ -1,0 +1,32 @@
+[terminal]
+# The VT to run the greeter on. Can be "next", "current" or a number
+# designating the VT.
+vt = 2
+
+# Sessions launch through uwsm rather than directly. uwsm builds the session environment
+# (/etc/profile, ~/.profile, then ~/.config/uwsm/env and env-<desktop>), runs the
+# compositor as wayland-wm@<entry>.service so its output lands in the journal, and owns
+# graphical-session.target for the units that hang off it.
+#
+# This replaces /opt/swaylog, which hand-rolled all three for sway alone: it exported the
+# environment inline, wrapped sway in `systemd-cat -t sway`, and left the session target to
+# a `systemctl --user restart` in the sway config. Hyprland already came up this way; sway
+# now does too.
+#
+# No --cmd on tuigreet, deliberately. With it, tuigreet takes the raw string as the default
+# session AND displays it verbatim as the session label -- the greeter would read
+# "uwsm start -e -D sway sway.desktop" instead of a name. Without it, tuigreet defaults to
+# session index 0 (greeter.rs: `SessionSource::Session(0)`), which is the first entry of a
+# list sorted byte-wise on Name=. The "1." prefix on sway-uwsm.desktop is what puts Sway
+# (uwsm-managed) there, so the default and the highlighted entry are the same thing and
+# there is no command string duplicated between here and the session entry.
+[default_session]
+command = "tuigreet"
+user = "greeter"
+
+# No initial_session: boot lands on the greeter rather than auto-logging into one
+# compositor. It used to autostart sway via /opt/swaylog, which quietly made sway the
+# boot default long after Hyprland became the daily driver. Uncomment to bring it back.
+#[initial_session]
+#command = "uwsm start -e -D sway sway.desktop"
+#user = "${LINUXCONFIG_USERNAME}"

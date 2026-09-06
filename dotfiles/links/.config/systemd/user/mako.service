@@ -1,6 +1,6 @@
-# Bound to graphical-session.target rather than sway-session.target so this starts under
-# both compositors: sway-session.target has BindsTo=graphical-session.target (so it pulls
-# it in), and uwsm starts graphical-session.target natively for Hyprland.
+# graphical-session.target is the only session target left: uwsm starts it for both
+# compositors, which is what retired the hand-rolled sway-session.target this used to be
+# bound to.
 [Unit]
 BindsTo=graphical-session.target
 After=graphical-session.target

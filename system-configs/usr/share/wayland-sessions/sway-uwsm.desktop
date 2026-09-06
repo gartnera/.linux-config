@@ -1,0 +1,23 @@
+[Desktop Entry]
+# Counterpart to the hyprland-uwsm.desktop entry that the hyprland package ships. The sway
+# package has no uwsm variant, so this one is ours.
+#
+# Exec points at sway.desktop (the plain entry, Exec=sway) rather than at sway directly:
+# uwsm takes the entry's ID as the compositor instance name, which is what makes the units
+# wayland-wm@sway.desktop.service and friends. -e -D sway pins XDG_CURRENT_DESKTOP to
+# exactly "sway", matching what /opt/swaylog used to export -- without -e, uwsm's sway
+# plugin appends ":wlroots", which would still work but changes which portal config and
+# which ~/.config/uwsm/env-* files apply.
+#
+# The "1." is load-bearing. tuigreet sorts the session list byte-wise on Name= and exposes
+# no ordering option (info.rs: `files.sort_by(|a, b| a.name.cmp(&b.name))`), so a numeric
+# prefix is the only way to lift the two uwsm entries above Hyprland/Plasma/Sway/Weston.
+# Digits sort below letters, so everything unprefixed follows in its usual order.
+# Being first also makes this the default: with no --cmd, tuigreet starts at index 0.
+# Keep in step with hyprland-uwsm.desktop, which carries the "2.".
+Name=1. Sway (uwsm-managed)
+Comment=An i3-compatible Wayland compositor
+Exec=uwsm start -e -D sway sway.desktop
+TryExec=uwsm
+DesktopNames=sway
+Type=Application

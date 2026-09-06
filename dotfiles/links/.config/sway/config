@@ -11,10 +11,17 @@ set $up k
 set $right l
 # Your preferred terminal emulator
 set $term systemd-run -p MemoryMax=75% -p CPUWeight=50 -p Nice=5 --user alacritty
-# Your preferred application launcher
-# Note: pass the final command to swaymsg so that the resulting window can be opened
-# on the original workspace that the command was run on.
-set $menu rofi -show run -run-command 'swaymsg exec -- {cmd}'
+# Your preferred application launcher.
+# Two layers, each earning its keep:
+#  - `uwsm app` gives the app its own scope unit in app-graphical.slice instead of letting
+#    it accumulate in the compositor's unit. Same call the Hyprland config makes.
+#  - `swaymsg exec` still wraps it, because rofi exits before the app maps its window and
+#    sway resolves a new view's workspace by walking up the process tree from the view's
+#    pid. Without swaymsg recording the origin, that walk dead-ends at the reaper and the
+#    window lands on whatever workspace is focused at map time. `uwsm app` defaults to a
+#    scope (systemd-run --scope), which leaves the process a child of the shell sway
+#    forked, so the chain sway walks stays intact.
+set $menu rofi -show run -run-command 'swaymsg exec -- uwsm app -- {cmd}'
 set $dash wldash
 
 set $lock systemd-cat -t swaylock swaylock -c 000000 --indicator-idle-visible -f
@@ -298,4 +305,17 @@ workspace 2 output 'LG Electronics LG ULTRAGEAR 010NTEPJQ724'
 workspace 3 output 'LG Electronics LG ULTRAGEAR 010NTBKJQ757'
 workspace 4 output 'LG Electronics LG ULTRAGEAR 010NTBKJQ757'
 
-exec_always "systemctl --user import-environment; systemctl --user restart sway-session.target"
+# uwsm owns the session now: it exports the environment, starts graphical-session.target
+# once the compositor is ready, and stops it on exit. All this line has to do is hand it
+# WAYLAND_DISPLAY/DISPLAY and signal readiness -- wayland-wm@sway.desktop.service is
+# Type=notify, so without it the session dies on startup timeout.
+#
+# SWAYSOCK, I3SOCK and XCURSOR_SIZE/THEME need not be listed: uwsm's bundled sway plugin
+# (/usr/share/uwsm/plugins/sway.sh) appends them to UWSM_FINALIZE_VARNAMES, and puts
+# SWAYSOCK in UWSM_WAIT_VARNAMES so the session waits for it. That is what replaces the
+# explicit dbus-update-activation-environment list this line used to carry.
+#
+# `exec`, not `exec_always`: finalize is a once-per-session handshake, not something to
+# repeat on `swaymsg reload`. The inner `exec` replaces the shell sway forked so no
+# intermediate process is left behind.
+exec exec uwsm finalize

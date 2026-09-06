@@ -1,0 +1,24 @@
+# Sourced by uwsm (in plain sh) when building the session environment, but only when
+# "sway" appears in XDG_CURRENT_DESKTOP -- so this is the sway half of what /opt/swaylog
+# used to export. The rest of that script has no home here on purpose:
+#
+#   PATH, QT_QPA_PLATFORMTHEME  -> ~/.profile, which uwsm sources for every compositor
+#                                  (and ~/.zshenv sources for shells)
+#   XDG_SESSION_TYPE,
+#   XDG_SESSION_DESKTOP,
+#   XDG_CURRENT_DESKTOP         -> set by uwsm itself from the session entry
+#   systemd-cat -t sway         -> unnecessary; uwsm runs the compositor as
+#                                  wayland-wm@sway.desktop.service, and sway logs to
+#                                  stderr by default, so the journal gets it for free
+#
+# Hyprland sets its equivalents in hyprland.lua via hl.env(), so each compositor still owns
+# its own variables; a shared ~/.config/uwsm/env would apply to both.
+#
+# Keep this POSIX sh.
+
+# wlroots-only. Hyprland uses aquamarine and ignores it, but scoping the file to sway makes
+# that explicit rather than incidental.
+export WLR_RENDERER=vulkan
+
+export MOZ_ENABLE_WAYLAND=1
+export QT_QPA_PLATFORM=wayland

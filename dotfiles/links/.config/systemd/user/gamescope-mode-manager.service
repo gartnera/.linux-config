@@ -1,16 +1,27 @@
-# Deliberately still bound to sway-session.target, NOT graphical-session.target: this
-# service talks sway IPC via python-i3ipc and its Hyprland port (socket2 events,
-# app_id -> class, `mode X` -> `hyprctl dispatch submap X`) is still deferred. Binding it
-# to graphical-session.target would make it crash-loop under Hyprland, since Restart=always.
+# gamescope mode manager. Still sway-only: it speaks sway IPC via python-i3ipc, and its
+# Hyprland port (socket2 events, app_id -> class, `mode X` -> `hyprctl dispatch submap X`)
+# is deferred, so under Hyprland it would crash-loop on Restart=always.
+#
+# It used to get that exclusivity from sway-session.target, a hand-rolled target the sway
+# config started by hand. uwsm now starts graphical-session.target for sway just as it does
+# for Hyprland, so that target is gone and the gating moves to ExecCondition on
+# $XDG_CURRENT_DESKTOP -- the same pattern the two waybar units use. A failed ExecCondition
+# marks the unit skipped rather than failed, so Restart=always does not fight it.
 [Unit]
-BindsTo=sway-session.target
+Description=gamescope mode manager (sway)
+BindsTo=graphical-session.target
+After=graphical-session.target
 
 [Service]
 Type=simple
+# Repurpose XDG Autostart filtering: runs only when XDG_CURRENT_DESKTOP matches
+ExecCondition=/usr/lib/systemd/systemd-xdg-autostart-condition "sway" ""
 Environment=PYTHONUNBUFFERED=true
 ExecStart=/home/alex/.linux-config/scripts-bin/gamescope-mode-manager
 Restart=always
 RestartSec=5
+# uwsm's slice for session-scoped background daemons.
+Slice=background-graphical.slice
 
 [Install]
-WantedBy=sway-session.target
+WantedBy=graphical-session.target

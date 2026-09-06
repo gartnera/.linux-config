@@ -1,0 +1,16 @@
+[Desktop Entry]
+# Override of the entry shipped by the hyprland package. Identical to it except for the
+# "2." prefix on Name, which is what places it second in the tuigreet session list --
+# tuigreet sorts byte-wise on Name= with no ordering option, so the prefix is the only
+# lever. See sway-uwsm.desktop, which carries the "1.".
+#
+# WARNING: /usr/share is package territory. A hyprland upgrade will overwrite this with
+# upstream's copy and the prefix will disappear, dropping the entry back among the plain
+# H-names. Nothing breaks -- Sway (uwsm-managed) stays first and stays the default -- but
+# re-run configure.sh to restore the ordering.
+Name=2. Hyprland (uwsm-managed)
+Comment=An intelligent dynamic tiling Wayland compositor
+Exec=uwsm start -e -D Hyprland hyprland.desktop
+TryExec=uwsm
+DesktopNames=Hyprland
+Type=Application
