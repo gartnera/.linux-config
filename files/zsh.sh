@@ -3,7 +3,8 @@ ZSH_THEME="robbyrussell"
 plugins=(git)
 source "$ZSH/oh-my-zsh.sh"
 
-export PATH="${PATH}:${HOME}/bin:${HOME}/.linux-config/scripts-bin/"
+# PATH now lives in ~/.profile (sourced by ~/.zshenv and by uwsm), so that the GUI,
+# tty logins and ssh all get the same environment. Do not re-add it here.
 
 bindkey '^r' history-incremental-pattern-search-backward
 
@@ -31,3 +32,6 @@ if [ -f "${SSH_ENV}" ]; then
 else
     start_agent;
 fi
+
+alias lxc=TERM=xterm-256color lxc
+alias ssh=TERM=xterm-256color ssh
