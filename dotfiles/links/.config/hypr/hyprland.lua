@@ -68,6 +68,12 @@ hl.config({
         colored_stdout_logs = false, -- ANSI escapes render as garbage in journalctl
         disable_time        = true,  -- journald timestamps already
     },
+
+    render = {
+        cm_enabled        = true,
+        cm_auto_hdr       = 2,
+        send_content_type = true,
+    },
 })
 
 ---------------------
@@ -123,6 +129,26 @@ hl.config({
     cursor = {
         -- sway: mouse_warping container
         no_warps = false,
+    },
+
+    -- X11 apps render at the display's real pixel size instead of being drawn at the
+    -- logical size and upscaled by the compositor -- which is what makes them blurry on a
+    -- scaled output (the TV below is scale 2). XWayland is handed the monitor's native
+    -- resolution, so its windows are 1:1 with the panel: crisp, but physically half-size on
+    -- a 2x output until the app scales itself (Xft.dpi / GDK_SCALE / QT_SCALE_FACTOR --
+    -- deliberately not set here, since that would put the scaling back).
+    xwayland = {
+        force_zero_scaling = true,
+
+        -- Xwayland's listening socket also gets an *abstract* one (@/tmp/.X11-unix/X0)
+        -- rather than only the on-disk /tmp/.X11-unix/X0. wlroots did this unconditionally,
+        -- so sway got it for free; Hyprland made it opt-in and defaults to off.
+        -- ~/bin/steam runs Steam under `systemd-run -p PrivateTmp=true`, which gives it a
+        -- private /tmp where the on-disk socket does not exist -- so XOpenDisplay fails and
+        -- Steam dies at startup. An abstract socket lives in the network namespace, not the
+        -- mount namespace, so it reaches through PrivateTmp. Takes effect at next login:
+        -- the socket is bound once when the Xwayland server starts, not on reload.
+        create_abstract_socket = true,
     },
 
     input = {
@@ -385,7 +411,7 @@ hl.window_rule({
 --
 -- NOTE: kanshi still owns modes/positions/scale for now (it speaks zwlr_output_manager_v1,
 -- which Hyprland implements). Migrating those to native monitor rules is deferred.
-hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
+hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto", cm = "auto" })
 
 -- sway: output "LG Electronics LG TV SSCR2 0x01010101" render_bit_depth 10
 --
@@ -400,6 +426,7 @@ hl.monitor({
     position = "auto",
     scale    = "2",
     bitdepth = 10,
+    cm       = "auto",
 })
 
 -- The two desk monitors, matching kanshi's `new-desk-3` profile exactly (2560x1440@144,
@@ -412,12 +439,14 @@ hl.monitor({
     mode     = "2560x1440@144",
     position = "0x0",
     scale    = "1.25",
+    cm       = "auto",
 })
 hl.monitor({
     output   = "desc:LG Electronics LG ULTRAGEAR 010NTBKJQ757",
     mode     = "2560x1440@144",
     position = "2048x0",
     scale    = "1.25",
+    cm       = "auto",
 })
 
 -- sway: workspace N output '...'

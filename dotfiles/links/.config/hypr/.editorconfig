@@ -1,0 +1,19 @@
+# https://editorconfig.org
+#
+# Scoped to hyprland.lua deliberately. Its table fields are column-aligned by
+# hand and no mainstream Lua formatter preserves that, so this covers only the
+# mechanical whitespace and leaves alignment and line breaks alone.
+#
+# configure.sh symlinks every file under dotfiles/links/ into $HOME, so this
+# also lands at ~/.config/hypr/.editorconfig -- which is what makes the rules
+# apply when the config is opened through its symlinked path.
+
+root = true
+
+[hyprland.lua]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
