@@ -241,6 +241,43 @@ hl.bind(mod .. " + SHIFT + e", hl.dsp.exec_cmd(
     "Hyprland? This will end your Wayland session.' -b 'Yes, exit Hyprland' " ..
     "'hyprctl dispatch \"hl.dsp.exit()\"'"))
 
+-- Clipboard
+--
+-- One chord for terminals and GUI apps both. SUPER is the physical Alt key here
+-- (altwin:swap_lalt_lwin, in the input section above), so this sits under the thumb
+-- roughly where Cmd + c/v does on a mac.
+--
+-- Sent with explicit mods and NO window target, so it lands on whatever holds keyboard
+-- focus -- including layer-shell surfaces like rofi, not just normal windows.
+--
+-- A virtual keyboard (wtype) will NOT do here: Hyprland aggregates modifier state at the
+-- seat, so the physically held SUPER merges into the injected chord and the app sees
+-- SUPER + CTRL + c. send_key_state sets the mods explicitly instead.
+--
+-- Down and up are split across a timer rather than using send_shortcut, which can leave
+-- synthetic key state stuck repeating: https://github.com/hyprwm/Hyprland/discussions/14099
+local function send_chord(mods, key)
+    hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "down" }))
+    hl.timer(function()
+        hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "up" }))
+    end, { timeout = 50, type = "oneshot" })
+end
+
+-- Terminals need CTRL + SHIFT + c/v, which is alacritty's default (man 5
+-- alacritty-bindings). Deliberately NOT SHIFT + Insert: alacritty binds that to
+-- PasteSelection, which pastes PRIMARY rather than the clipboard.
+local terminals = { Alacritty = true }
+
+local function clipboard(key)
+    return function()
+        local w = hl.get_active_window()
+        send_chord(w and terminals[w.class] and "CTRL SHIFT" or "CTRL", key)
+    end
+end
+
+hl.bind(mod .. " + c", clipboard("c"))
+hl.bind(mod .. " + v", clipboard("v"))
+
 -- Moving around
 for key, dir in pairs({ [left] = "l", [down] = "d", [up] = "u", [right] = "r" }) do
     hl.bind(mod .. " + " .. key, focus_dir(dir))
@@ -261,7 +298,7 @@ end
 -- Layout
 if hy3 then
     hl.bind(mod .. " + b", hy3.make_group("h"))                    -- sway: splith
-    hl.bind(mod .. " + v", hy3.make_group("v"))                    -- sway: splitv
+    hl.bind(mod .. " + SHIFT + b", hy3.make_group("v"))            -- sway: splitv
     -- sway: layout tabbed. changegroup, NOT makegroup: makegroup wraps the focused node in
     -- a NEW group, which on a split workspace tabs only the active window. changegroup
     -- changes the layout of the group the node already belongs to, which is what sway's
@@ -271,7 +308,9 @@ if hy3 then
     hl.bind(mod .. " + e", hy3.change_group("opposite"))           -- sway: layout toggle split
     hl.bind(mod .. " + space", hy3.toggle_focus_layer())           -- sway: focus mode_toggle
     hl.bind(mod .. " + p", hy3.change_focus("raise"))              -- sway: focus parent
-    hl.bind(mod .. " + c", hy3.change_focus("lower"))              -- sway: focus child
+    hl.bind(mod .. " + SHIFT + p", hy3.change_focus("lower"))      -- sway: focus child
+    -- NOTE: sway had these on $mod+v / $mod+c. Both moved onto SHIFT to free
+    -- SUPER + c/v for the clipboard binds above.
 end
 -- NOTE: sway's $mod+s (layout stacking) has no hy3 equivalent -- hy3 does tabs only.
 -- Accepted loss; native groups have groupbar:stacked but can't mix with hy3.

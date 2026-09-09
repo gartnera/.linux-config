@@ -1,0 +1,29 @@
+#!/bin/sh
+# Universal copy/paste for sway: one chord ($mod+c / $mod+v) for terminals and GUI apps.
+#
+# Hyprland does this natively with hl.dsp.send_key_state -- see the Clipboard section of
+# ~/.config/hypr/hyprland.lua. Sway has no dispatcher that injects a key chord, so this
+# goes through wtype's virtual keyboard instead.
+#
+# Terminals get CTRL+SHIFT+c/v, which is alacritty's default (man 5 alacritty-bindings).
+# Deliberately NOT shift+Insert: alacritty binds that to PasteSelection, which pastes
+# PRIMARY rather than the clipboard.
+set -eu
+
+case "${1:-}" in
+    copy)  key=c ;;
+    paste) key=v ;;
+    *) echo "usage: ${0##*/} copy|paste" >&2; exit 2 ;;
+esac
+
+# app_id for Wayland clients, window_properties.class for XWayland ones.
+focused=$(swaymsg -t get_tree | jq -r '
+    recurse(.nodes[]?, .floating_nodes[]?)
+    | select(.focused == true)
+    | .app_id // .window_properties.class // ""
+' | head -n1)
+
+case "$focused" in
+    Alacritty) exec wtype -M ctrl -M shift -k "$key" -m shift -m ctrl ;;
+    *)         exec wtype -M ctrl -k "$key" -m ctrl ;;
+esac

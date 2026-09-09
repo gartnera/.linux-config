@@ -94,6 +94,16 @@ bindsym --release $mod+Ctrl+l exec "$lock"
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
+    # Clipboard: one chord for terminals and GUI apps both. $mod is the physical Alt
+    # key here (altwin:swap_lalt_lwin, in the input section below), so this sits under
+    # the thumb roughly where Cmd+c/v does on a mac.
+    #
+    # Unlike Hyprland, sway has no dispatcher that injects a key chord, so this shells
+    # out to wtype -- see scripts-bin/sway-clipboard-chord for why the terminal case
+    # differs. Requires the `wtype` package.
+    bindsym $mod+c exec sway-clipboard-chord copy
+    bindsym $mod+v exec sway-clipboard-chord paste
 #
 # Moving around:
 #
@@ -149,10 +159,11 @@ bindsym --release $mod+Ctrl+l exec "$lock"
 # Layout stuff:
 #
     # You can "split" the current object of your focus with
-    # $mod+b or $mod+v, for horizontal and vertical splits
-    # respectively.
+    # $mod+b or $mod+Shift+b, for horizontal and vertical splits
+    # respectively. ($mod+v was sway's default for splitv; it moved onto Shift
+    # to free $mod+v for the clipboard bind above.)
     bindsym $mod+b splith
-    bindsym $mod+v splitv
+    bindsym $mod+Shift+b splitv
 
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
@@ -168,9 +179,10 @@ bindsym --release $mod+Ctrl+l exec "$lock"
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
 
-    # Parent/child focus
+    # Parent/child focus. ($mod+c was focus child; it moved onto Shift to free
+    # $mod+c for the clipboard bind above.)
     bindsym $mod+p focus parent
-    bindsym $mod+c focus child
+    bindsym $mod+Shift+p focus child
 #
 # Scratchpad:
 #
